@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2013 BSI Business Systems Integration AG.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     BSI Business Systems Integration AG - initial API and implementation
+ ******************************************************************************/
 package org.eclipsescout.demo.widgets.client.services;
 
 import java.lang.reflect.Modifier;
@@ -36,7 +43,14 @@ import org.osgi.framework.Bundle;
 @Priority(1)
 public class LocalCodeService extends AbstractService implements ICodeService {
   private static final IScoutLogger LOG = ScoutLogManager.getLogger(LocalCodeService.class);
-  private HashMap<String, Set<BundleClassDescriptor>> m_codeTypeClassDescriptorMap = new HashMap<String, Set<BundleClassDescriptor>>();
+
+  private final Object m_codeTypeClassDescriptorMapLock;
+  private final HashMap<String, Set<BundleClassDescriptor>> m_codeTypeClassDescriptorMap;
+
+  public LocalCodeService() {
+    m_codeTypeClassDescriptorMapLock = new Object();
+    m_codeTypeClassDescriptorMap = new HashMap<String, Set<BundleClassDescriptor>>();
+  }
 
   @Override
   public <T extends ICodeType<?, ?>> T getCodeType(Class<T> type) {
@@ -61,9 +75,9 @@ public class LocalCodeService extends AbstractService implements ICodeService {
     if (id == null) {
       return null;
     }
-    for (ICodeType ct : getAllCodeTypes("")) {
+    for (ICodeType<?, ?> ct : getAllCodeTypes("")) {
       if (id.equals(ct.getId())) {
-        return ct;
+        return (ICodeType<T, ?>) ct;
       }
     }
     return null;
@@ -75,30 +89,17 @@ public class LocalCodeService extends AbstractService implements ICodeService {
   }
 
   @Override
-  public List<ICodeType<?, ?>> getCodeTypes(Long partitionId, List<Class<? extends ICodeType<?, ?>>> types) {
-    List<ICodeType<?, ?>> instances = new ArrayList<>();
-    for (Class<? extends ICodeType<?, ?>> type : types) {
-      instances.add(getCodeType(type));
+  public List<ICodeType<?, ?>> getCodeTypes(List<Class<? extends ICodeType<?, ?>>> types) {
+    List<ICodeType<?, ?>> result = new ArrayList<ICodeType<?, ?>>();
+    for (Class<? extends ICodeType<?, ?>> codeTypeClazz : types) {
+      result.add(getCodeType(codeTypeClazz));
     }
-    return instances;
+    return Collections.unmodifiableList(result);
   }
 
   @Override
-  public List<ICodeType<?, ?>> getCodeTypes(List<Class<? extends ICodeType<?, ?>>> types) {
-    List<Class<? extends ICodeType<?, ?>>> missingTypes = new ArrayList<Class<? extends ICodeType<?, ?>>>();
-    List<ICodeType<?, ?>> instances = new ArrayList<ICodeType<?, ?>>();
-
-    for (Class<? extends ICodeType<?, ?>> codeTypeClazz : types) {
-      ICodeType<?, ?> codeType = getCodeType(codeTypeClazz);
-      if (codeType != null) {
-        instances.add(codeType);
-      }
-      else {
-        missingTypes.add(codeTypeClazz);
-      }
-    }
-
-    return Collections.unmodifiableList(instances);
+  public List<ICodeType<?, ?>> getCodeTypes(Long partitionId, List<Class<? extends ICodeType<?, ?>>> types) {
+    return getCodeTypes(types);
   }
 
   @SuppressWarnings("unchecked")
@@ -124,11 +125,11 @@ public class LocalCodeService extends AbstractService implements ICodeService {
         LOG.error("find code " + type, t);
       }
     }
-    ICodeType codeType = getCodeType(declaringCodeTypeClass);
-    final Holder<ICode> codeHolder = new Holder<ICode>(ICode.class);
-    ICodeVisitor v = new ICodeVisitor() {
+    ICodeType<?, CODE_ID_TYPE> codeType = getCodeType(declaringCodeTypeClass);
+    final Holder<ICode<CODE_ID_TYPE>> codeHolder = new Holder<ICode<CODE_ID_TYPE>>();
+    ICodeVisitor<ICode<CODE_ID_TYPE>> v = new ICodeVisitor<ICode<CODE_ID_TYPE>>() {
       @Override
-      public boolean visit(ICode code, int treeLevel) {
+      public boolean visit(ICode<CODE_ID_TYPE> code, int treeLevel) {
         if (code.getClass() == type) {
           codeHolder.setValue(code);
           return false;
@@ -146,7 +147,7 @@ public class LocalCodeService extends AbstractService implements ICodeService {
   }
 
   @Override
-  public <T extends ICodeType<?, ?>> T reloadCodeType(Class<T> type) {
+  public <T extends ICodeType<?, ?>> T reloadCodeType(Class<T> type) throws ProcessingException {
     if (type == null) {
       return null;
     }
@@ -154,7 +155,7 @@ public class LocalCodeService extends AbstractService implements ICodeService {
   }
 
   @Override
-  public List<ICodeType<?, ?>> reloadCodeTypes(List<Class<? extends ICodeType<?, ?>>> types) {
+  public List<ICodeType<?, ?>> reloadCodeTypes(List<Class<? extends ICodeType<?, ?>>> types) throws ProcessingException {
     if (types == null) {
       return null;
     }
@@ -163,61 +164,59 @@ public class LocalCodeService extends AbstractService implements ICodeService {
 
   @Override
   public Set<BundleClassDescriptor> getAllCodeTypeClasses(String classPrefix) {
-    // There is no classPrefix integration
     if (classPrefix == null) {
-      return Collections.emptySet();
+      return CollectionUtility.hashSet();
     }
-    Set<BundleClassDescriptor> a = m_codeTypeClassDescriptorMap.get(classPrefix);
-    if (a != null) {
-      return CollectionUtility.hashSet(a);
-    }
-    //
-    HashSet<BundleClassDescriptor> discoveredCodeTypes = new HashSet<BundleClassDescriptor>();
-    for (Bundle bundle : Activator.getDefault().getBundle().getBundleContext().getBundles()) {
-      if (bundle.getSymbolicName().startsWith(classPrefix)) {
-        // ok
+    synchronized (m_codeTypeClassDescriptorMapLock) {
+      Set<BundleClassDescriptor> a = m_codeTypeClassDescriptorMap.get(classPrefix);
+      if (a != null) {
+        return CollectionUtility.hashSet(a);
       }
-      else if (classPrefix.startsWith(bundle.getSymbolicName() + ".")) {
-        // ok
-      }
-      else {
-        continue;
-      }
-      String[] classNames;
-      try {
-        BundleBrowser bundleBrowser = new BundleBrowser(bundle.getSymbolicName(), bundle.getSymbolicName());
-        classNames = bundleBrowser.getClasses(false, true);
-      }
-      catch (Exception e1) {
-        LOG.warn(null, e1);
-        continue;
-      }
-      // filter
-      for (String className : classNames) {
-        // fast pre-check
-        if (className.indexOf("CodeType") >= 0) {
-          try {
-            Class c = null;
-            c = bundle.loadClass(className);
-            if (ICodeType.class.isAssignableFrom(c)) {
-              if (!c.isInterface()) {
-                int flags = c.getModifiers();
-                if (Modifier.isPublic(flags) && (!Modifier.isAbstract(flags)) && (!c.getSimpleName().startsWith("Abstract"))) {
-                  if (ICodeType.class.isAssignableFrom(c)) {
-                    discoveredCodeTypes.add(new BundleClassDescriptor(bundle.getSymbolicName(), c.getName()));
-                  }
-                }
+      //
+      Set<BundleClassDescriptor> discoveredCodeTypes = new HashSet<BundleClassDescriptor>();
+      for (Bundle bundle : Activator.getDefault().getBundle().getBundleContext().getBundles()) {
+        if (bundle.getSymbolicName().startsWith(classPrefix)) {
+          // ok
+        }
+        else if (classPrefix.startsWith(bundle.getSymbolicName() + ".")) {
+          // ok
+        }
+        else {
+          continue;
+        }
+        // Skip uninteresting bundles
+        if (!acceptBundle(bundle, classPrefix)) {
+          continue;
+        }
+        String[] classNames;
+        try {
+          BundleBrowser bundleBrowser = new BundleBrowser(bundle.getSymbolicName(), bundle.getSymbolicName());
+          classNames = bundleBrowser.getClasses(false, true);
+        }
+        catch (Exception e1) {
+          LOG.warn(null, e1);
+          continue;
+        }
+        // filter
+        for (String className : classNames) {
+          // fast pre-check
+          if (acceptClassName(bundle, className)) {
+            try {
+              Class c = null;
+              c = bundle.loadClass(className);
+              if (acceptClass(bundle, c)) {
+                discoveredCodeTypes.add(new BundleClassDescriptor(bundle.getSymbolicName(), c.getName()));
               }
             }
-          }
-          catch (Throwable t) {
-            // nop
+            catch (Throwable t) {
+              // nop
+            }
           }
         }
       }
+      m_codeTypeClassDescriptorMap.put(classPrefix, discoveredCodeTypes);
+      return CollectionUtility.hashSet(discoveredCodeTypes);
     }
-    m_codeTypeClassDescriptorMap.put(classPrefix, discoveredCodeTypes);
-    return CollectionUtility.hashSet(discoveredCodeTypes);
   }
 
   @SuppressWarnings("unchecked")
@@ -241,4 +240,60 @@ public class LocalCodeService extends AbstractService implements ICodeService {
     return getAllCodeTypes(classPrefix);
   }
 
+  /**
+   * Checks whether the given bundle should be scanned for code type classes. The default implementations accepts
+   * all bundles that are not fragments (because classes from fragments are automatically read when browsing the host
+   * bundle).
+   * 
+   * @return Returns <code>true</code> if the given bundle meets the requirements to be scanned for code type classes.
+   *         <code>false</code> otherwise.
+   */
+  protected boolean acceptBundle(Bundle bundle, String classPrefix) {
+    return !Platform.isFragment(bundle);
+  }
+
+  /**
+   * Checks whether the given class name is a potential code type class. Class names that do not meet the
+   * requirements of this method are not considered further, i.e. the "expensive" class instantiation is skipped.
+   * The default implementation checks whether the class name contains <code>"CodeType"</code>.
+   * 
+   * @param bundle
+   *          The class's hosting bundle
+   * @param className
+   *          the class name to be checked
+   * @return Returns <code>true</code> if the given class name meets the requirements to be considered as a code type
+   *         class. <code>false</code> otherwise.
+   */
+  protected boolean acceptClassName(Bundle bundle, String className) {
+    return (className.indexOf("CodeType") >= 0);
+  }
+
+  /**
+   * Checks whether the given class is a CodeType class that should be visible to this service. The default
+   * implementation checks if the class meets the following conditions:
+   * <ul>
+   * <li>subclass of {@link ICodeType}
+   * <li><code>public</code>
+   * <li>not an <code>interface</code>
+   * <li>not <code>abstract</code>
+   * <li>the class's simple name does not start with <code>"Abstract"</code> (convenience check)
+   * </ul>
+   * 
+   * @param bundle
+   *          The class's hosting bundle
+   * @param c
+   *          the class to be checked
+   * @return Returns <code>true</code> if the class is a code type class. <code>false</code> otherwise.
+   */
+  protected boolean acceptClass(Bundle bundle, Class<?> c) {
+    if (ICodeType.class.isAssignableFrom(c)) {
+      if (!c.isInterface()) {
+        int flags = c.getModifiers();
+        if (Modifier.isPublic(flags) && (!Modifier.isAbstract(flags)) && (!c.getSimpleName().startsWith("Abstract"))) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }

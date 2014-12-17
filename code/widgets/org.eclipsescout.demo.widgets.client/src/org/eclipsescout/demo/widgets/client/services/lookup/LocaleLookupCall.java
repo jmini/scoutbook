@@ -36,7 +36,7 @@ public class LocaleLookupCall extends LocalLookupCall<Locale> {
 
   @Override
   protected List<LookupRow<Locale>> execCreateLookupRows() throws ProcessingException {
-    ArrayList<LookupRow<Locale>> rows = new ArrayList<>();
+    ArrayList<LookupRow<Locale>> rows = new ArrayList<LookupRow<Locale>>();
     Locale[] locales = SimpleDateFormat.getAvailableLocales();
 
     for (Locale locale : sort(locales)) {

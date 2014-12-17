@@ -2,17 +2,37 @@
 <plugin>
   <extension id="app" name="Application" point="org.eclipse.core.runtime.applications">
     <application>
-      <run class="org.eclipsescout.demo.widgets.ui.swing.SwingApplication"/>
+      <run class="org.eclipsescout.demo.widgets.ui.swing.WidgetExtensibleSwingApplication"/>
     </application>
   </extension>
   <extension id="product" point="org.eclipse.core.runtime.products">
     <product
           application="org.eclipsescout.demo.widgets.ui.swing.app"
-          name="widget Client">
+          name="Scout Widget Demo App Client">
        <property
              name="appName"
-             value="widget Client">
+             value="Scout Widget Demo App Client">
        </property>
     </product>
+  </extension>
+  
+  <extension
+        point="org.eclipse.scout.rt.ui.swing.appextensions">
+     <swingApplicationExtension
+           class="org.eclipsescout.demo.widgets.ui.swing.defaultlaf.SwingDefaultApplication"
+           ranking="1">
+     </swingApplicationExtension>
+  </extension>
+  <extension
+        id="rayo_product"
+        point="org.eclipse.core.runtime.products">
+     <product
+           application="org.eclipsescout.demo.widgets.ui.swing.app"
+           name="Scout Widget Demo App Client">
+        <property
+              name="appName"
+              value="Scout Widget Demo App Client">
+        </property>
+     </product>
   </extension>
 </plugin>

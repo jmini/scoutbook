@@ -10,6 +10,7 @@ out/pdf/book.pdf
 
 # code stuff
 code/*/.metadata/**/*
+target/
 *.class
 
 # leave makefile alone

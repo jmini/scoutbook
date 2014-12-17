@@ -215,7 +215,7 @@ public class ListBoxForm extends AbstractForm implements IPageForm {
 
         @Override
         protected void execInitField() throws ProcessingException {
-          Set<Color> colors = new HashSet<>();
+          Set<Color> colors = new HashSet<Color>();
 
           colors.add(ColorsCodeType.GreenCode.ID);
           colors.add(ColorsCodeType.BlueCode.ID);
@@ -291,7 +291,7 @@ public class ListBoxForm extends AbstractForm implements IPageForm {
 
         @Override
         protected void execInitField() throws ProcessingException {
-          Set<Integer> set = new HashSet<>();
+          Set<Integer> set = new HashSet<Integer>();
           set.add(2);
           set.add(3);
           setValue(set);
@@ -400,7 +400,7 @@ public class ListBoxForm extends AbstractForm implements IPageForm {
         @Override
         protected void execChangedValue() throws ProcessingException {
           List<Node> nodes = parseFieldValue(false);
-          List<LookupRow<String>> rows = new ArrayList<>();
+          List<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
 
           addNodesToLookupRows(nodes, rows);
           ((UserContentListLookupCall) getListBoxField().getLookupCall()).setLookupRows(rows);

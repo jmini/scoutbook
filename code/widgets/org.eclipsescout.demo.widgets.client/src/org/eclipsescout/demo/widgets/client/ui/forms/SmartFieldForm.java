@@ -459,7 +459,7 @@ public class SmartFieldForm extends AbstractForm implements IPageForm {
         @Override
         protected void execChangedValue() throws ProcessingException {
           List<Node> nodes = parseFieldValue(false);
-          ArrayList<LookupRow<String>> rows = new ArrayList<>();
+          ArrayList<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
           addNodesToLookupRows(nodes, rows);
 
           ((UserContentListLookupCall) getListSmartField().getLookupCall()).setLookupRows(rows);
@@ -570,7 +570,7 @@ public class SmartFieldForm extends AbstractForm implements IPageForm {
         @Override
         protected void execChangedValue() throws ProcessingException {
           List<Node> nodes = parseFieldValue(true);
-          List<LookupRow<String>> rows = new ArrayList<>();
+          List<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
 
           addNodesToLookupRows(nodes, rows);
           ((UserContentTreeLookupCall) getTreeSmartField().getLookupCall()).setLookupRows(rows);

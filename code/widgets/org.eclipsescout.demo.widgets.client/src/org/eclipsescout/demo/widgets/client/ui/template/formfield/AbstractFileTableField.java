@@ -179,7 +179,7 @@ public abstract class AbstractFileTableField extends AbstractTableField {
       }
       catch (Exception e) {
         setErrorStatus(e.getMessage());
-        throw e;
+        throw new ProcessingException(e.getMessage(), e);
       }
     }
 

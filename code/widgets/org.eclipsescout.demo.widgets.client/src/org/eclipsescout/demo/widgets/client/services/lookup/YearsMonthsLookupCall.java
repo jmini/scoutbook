@@ -22,7 +22,7 @@ public class YearsMonthsLookupCall extends LocalLookupCall<String> {
 
   @Override
   protected List<? extends ILookupRow<String>> execCreateLookupRows() throws ProcessingException {
-    List<LookupRow<String>> rows = new ArrayList<>();
+    List<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
 
     int year = Calendar.getInstance().get(Calendar.YEAR);
     String[] months = new DateFormatSymbols().getMonths();
@@ -35,7 +35,7 @@ public class YearsMonthsLookupCall extends LocalLookupCall<String> {
 
       for (int j = 0; j < 12; j++) {
         String key = String.valueOf(100 * i + j + 1);
-        LookupRow<String> row = new LookupRow<>(key, months[j]);
+        LookupRow<String> row = new LookupRow<String>(key, months[j]);
         row.setParentKey(parentKey);
         rows.add(row);
       }

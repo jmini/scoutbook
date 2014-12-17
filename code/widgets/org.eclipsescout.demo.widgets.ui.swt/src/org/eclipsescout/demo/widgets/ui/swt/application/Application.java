@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013 BSI Business Systems Integration AG.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     BSI Business Systems Integration AG - initial API and implementation
+ ******************************************************************************/
 package org.eclipsescout.demo.widgets.ui.swt.application;
 
 import java.security.PrivilegedExceptionAction;
@@ -29,7 +39,6 @@ public class Application implements IApplication {
         public Object run() throws Exception {
           return startSecure(context);
         }
-
       });
     }
     finally {
@@ -48,6 +57,13 @@ public class Application implements IApplication {
     return EXIT_OK;
   }
 
+  public Display getApplicationDisplay() {
+    if (m_display == null) {
+      m_display = Display.getDefault();
+    }
+    return m_display;
+  }
+
   @Override
   public void stop() {
     final IWorkbench workbench = PlatformUI.getWorkbench();
@@ -57,15 +73,8 @@ public class Application implements IApplication {
       @Override
       public void run() {
         if (!display.isDisposed())
-          workbench.close();
+        workbench.close();
       }
     });
-  }
-
-  public Display getApplicationDisplay() {
-    if (m_display == null) {
-      m_display = Display.getDefault();
-    }
-    return m_display;
   }
 }

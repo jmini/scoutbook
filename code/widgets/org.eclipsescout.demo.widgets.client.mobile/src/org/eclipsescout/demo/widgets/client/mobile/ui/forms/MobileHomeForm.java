@@ -1,15 +1,22 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2013 BSI Business Systems Integration AG.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     BSI Business Systems Integration AG - initial API and implementation
+ ******************************************************************************/
 package org.eclipsescout.demo.widgets.client.mobile.ui.forms;
 
 import java.util.List;
 
+import org.eclipse.scout.commons.CollectionUtility;
 import org.eclipse.scout.commons.annotations.Order;
 import org.eclipse.scout.commons.exception.ProcessingException;
 import org.eclipse.scout.rt.client.ClientJob;
-import org.eclipse.scout.rt.client.mobile.transformation.DeviceTransformationConfig;
-import org.eclipse.scout.rt.client.mobile.transformation.DeviceTransformationUtility;
+import org.eclipse.scout.rt.client.mobile.transformation.IDeviceTransformationService;
 import org.eclipse.scout.rt.client.mobile.transformation.MobileDeviceTransformation;
 import org.eclipse.scout.rt.client.mobile.ui.basic.table.AbstractMobileTable;
 import org.eclipse.scout.rt.client.mobile.ui.desktop.MobileDesktopUtility;
@@ -25,18 +32,12 @@ import org.eclipse.scout.rt.client.ui.form.fields.tablefield.AbstractTableField;
 import org.eclipse.scout.rt.extension.client.ui.form.fields.button.AbstractExtensibleButton;
 import org.eclipse.scout.rt.shared.AbstractIcons;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipse.scout.service.SERVICES;
 import org.eclipsescout.demo.widgets.client.mobile.ui.forms.MobileHomeForm.MainBox.LogoutButton;
 import org.eclipsescout.demo.widgets.client.mobile.ui.forms.MobileHomeForm.MainBox.OutlinesTableField;
-import org.eclipsescout.demo.widgets.client.mobile.ui.forms.MobileHomeForm.MainBox.OutlinesTableField.Table;
 
-/**
- * @author mzi
- */
 public class MobileHomeForm extends AbstractMobileForm implements IOutlineChooserForm {
 
-  /**
-   * @throws org.eclipse.scout.commons.exception.ProcessingException
-   */
   public MobileHomeForm() throws ProcessingException {
     super();
   }
@@ -57,39 +58,23 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
   }
 
   @Override
-  protected boolean getConfiguredFooterVisible() {
-    return true;
-  }
-
-  @Override
   protected String getConfiguredTitle() {
     return TEXTS.get("MobileOutlineChooserTitle");
   }
 
-  /**
-   * @throws org.eclipse.scout.commons.exception.ProcessingException
-   */
-  public void startView() throws ProcessingException {
-    startInternal(new ViewHandler());
+  @Override
+  protected boolean getConfiguredFooterVisible() {
+    return true;
   }
 
-  /**
-   * @return the LogoutButton
-   */
   public LogoutButton getLogoutButton() {
     return getFieldByClass(LogoutButton.class);
   }
 
-  /**
-   * @return the MainBox
-   */
   public MainBox getMainBox() {
     return getFieldByClass(MainBox.class);
   }
 
-  /**
-   * @return the OutlinesTableField
-   */
   public OutlinesTableField getOutlinesTableField() {
     return getFieldByClass(OutlinesTableField.class);
   }
@@ -105,27 +90,22 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
     @Override
     protected void execInitField() throws ProcessingException {
       // Table already is scrollable, it's not necessary to make the form scrollable too
-      DeviceTransformationConfig config = DeviceTransformationUtility.getDeviceTransformationConfig();
-      if (config != null) {
-        config.excludeFieldTransformation(this, MobileDeviceTransformation.MAKE_MAINBOX_SCROLLABLE);
+      IDeviceTransformationService service = SERVICES.getService(IDeviceTransformationService.class);
+      if (service != null && service.getDeviceTransformer() != null) {
+        service.getDeviceTransformer().getDeviceTransformationConfig().excludeFieldTransformation(this, MobileDeviceTransformation.MAKE_MAINBOX_SCROLLABLE);
       }
     }
 
     @Order(10.0)
-    public class OutlinesTableField extends AbstractTableField<Table> {
-
-      @Override
-      protected int getConfiguredGridH() {
-        return 2;
-      }
-
-      @Override
-      protected boolean getConfiguredLabelVisible() {
-        return false;
-      }
+    public class OutlinesTableField extends AbstractTableField<OutlinesTableField.Table> {
 
       @Order(10.0)
       public class Table extends AbstractMobileTable {
+
+        @Override
+        protected boolean execIsAutoCreateTableRowForm() {
+          return false;
+        }
 
         @Override
         protected boolean getConfiguredAutoDiscardOnDelete() {
@@ -133,13 +113,13 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
         }
 
         @Override
-        protected boolean getConfiguredAutoResizeColumns() {
-          return true;
+        protected String getConfiguredDefaultIconId() {
+          return AbstractIcons.TreeNode;
         }
 
         @Override
-        protected String getConfiguredDefaultIconId() {
-          return AbstractIcons.TreeNode;
+        protected boolean getConfiguredAutoResizeColumns() {
+          return true;
         }
 
         @Override
@@ -156,31 +136,19 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
         }
 
         @Override
-        protected boolean execIsAutoCreateTableRowForm() {
-          return false;
-        }
-
-        @Override
         protected void execRowsSelected(List<? extends ITableRow> rows) throws ProcessingException {
-          if (rows == null || rows.size() == 0) {
-            return;
+          if (CollectionUtility.hasElements(rows)) {
+            IOutline outline = getOutlineColumn().getValue(CollectionUtility.firstElement(rows));
+            MobileDesktopUtility.activateOutline(outline);
+            getDesktop().removeForm(MobileHomeForm.this);
+            clearSelectionDelayed();
           }
-          IOutline outline = getOutlineColumn().getValue(rows.get(0));
-          MobileDesktopUtility.activateOutline(outline);
-          getDesktop().removeForm(MobileHomeForm.this);
-          clearSelectionDelayed();
         }
 
-        /**
-         * @return the LabelColumn
-         */
         public LabelColumn getLabelColumn() {
           return getColumnSet().getColumnByClass(LabelColumn.class);
         }
 
-        /**
-         * @return the OutlineColumn
-         */
         public OutlineColumn getOutlineColumn() {
           return getColumnSet().getColumnByClass(OutlineColumn.class);
         }
@@ -198,6 +166,16 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
         public class LabelColumn extends AbstractStringColumn {
         }
       }
+
+      @Override
+      protected boolean getConfiguredLabelVisible() {
+        return false;
+      }
+
+      @Override
+      protected int getConfiguredGridH() {
+        return 2;
+      }
     }
 
     @Order(20.0)
@@ -213,28 +191,31 @@ public class MobileHomeForm extends AbstractMobileForm implements IOutlineChoose
         ClientJob.getCurrentSession().stopSession();
       }
     }
+
   }
 
   public class ViewHandler extends AbstractFormHandler {
 
     @Override
-    protected void execFinally() throws ProcessingException {
-      Table table = getOutlinesTableField().getTable();
-      table.discardAllRows();
-    }
-
-    @Override
     protected void execLoad() throws ProcessingException {
-      Table table = getOutlinesTableField().getTable();
-      List<IOutline> outlines = getDesktop().getAvailableOutlines();
-      for (IOutline outline : outlines) {
+      OutlinesTableField.Table table = getOutlinesTableField().getTable();
+      for (IOutline outline : getDesktop().getAvailableOutlines()) {
         if (outline.isVisible() && outline.getRootNode() != null) {
           ITableRow row = table.createRow(new Object[]{outline, outline.getTitle()});
           row.setEnabled(outline.isEnabled());
           table.addRow(row);
         }
       }
-
     }
+
+    @Override
+    protected void execFinally() throws ProcessingException {
+      OutlinesTableField.Table table = getOutlinesTableField().getTable();
+      table.discardAllRows();
+    }
+  }
+
+  public void startView() throws ProcessingException {
+    startInternal(new ViewHandler());
   }
 }

@@ -5,7 +5,7 @@
          name=""
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="widget"
+            name="Scout Widget Demo App"
             icon="resources/icons/eclipse_scout.gif"
             fixed="false"
             class="org.eclipsescout.demo.widgets.ui.swt.perspective.Perspective"
@@ -106,7 +106,7 @@
             id="org.eclipse.ui.views.ProgressView">
       </view>
       <category
-            name="widget"
+            name="widgets"
             id="org.eclipsescout.demo.widgets.ui.swt.viewCategory">
       </category>
    </extension>
@@ -144,11 +144,11 @@
          name=""
          point="org.eclipse.core.runtime.products">
       <product
-            name="widget"
+            name="Scout Widget Demo App"
             application="org.eclipsescout.demo.widgets.ui.swt.application">
          <property
                name="appName"
-               value="widget">
+               value="Scout Widget Demo App">
          </property>
          <property
                name="applicationXMI"

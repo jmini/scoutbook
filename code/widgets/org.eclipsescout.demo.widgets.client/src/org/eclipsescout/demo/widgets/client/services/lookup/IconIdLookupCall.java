@@ -19,7 +19,7 @@ public class IconIdLookupCall extends LocalLookupCall<String> {
 
   @Override
   protected List<LookupRow<String>> execCreateLookupRows() throws ProcessingException {
-    ArrayList<LookupRow<String>> rows = new ArrayList<>();
+    ArrayList<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
 
     // TODO: there might be a better way via reflection over AbstractIcon
     rows.add(new LookupRow<String>("null", "null"));

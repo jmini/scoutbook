@@ -221,7 +221,7 @@ public class TreeBoxForm extends AbstractForm implements IPageForm {
 
         @Override
         protected void execInitField() throws ProcessingException {
-          Set<Long> codes = new HashSet<>();
+          Set<Long> codes = new HashSet<Long>();
           codes.add(IndustryICBCodeType.ICB8000.ID);
           codes.add(IndustryICBCodeType.ICB8000.ICB8500.ID);
           codes.add(IndustryICBCodeType.ICB9000.ICB9500.ICB9530.ICB9537.ID);
@@ -301,7 +301,7 @@ public class TreeBoxForm extends AbstractForm implements IPageForm {
           int year = Calendar.getInstance().get(Calendar.YEAR);
           int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
           int key = 100 * year + month;
-          Set<String> times = new HashSet<>();
+          Set<String> times = new HashSet<String>();
           times.add(String.valueOf(key));
           times.add(String.valueOf(key + 1));
           times.add(String.valueOf(key + 2));
@@ -411,7 +411,7 @@ public class TreeBoxForm extends AbstractForm implements IPageForm {
         @Override
         protected void execChangedValue() throws ProcessingException {
           List<Node> nodes = parseFieldValue(true);
-          List<LookupRow<String>> rows = new ArrayList<>();
+          List<LookupRow<String>> rows = new ArrayList<LookupRow<String>>();
 
           addNodesToLookupRows(nodes, rows);
           ((UserContentTreeLookupCall) getTreeBoxField().getLookupCall()).setLookupRows(rows);

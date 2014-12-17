@@ -3,6 +3,7 @@ package org.eclipsescout.demo.widgets.client.ui.desktop;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.scout.commons.CollectionUtility;
 import org.eclipse.scout.commons.annotations.Order;
 import org.eclipse.scout.commons.exception.ProcessingException;
 import org.eclipse.scout.commons.logger.IScoutLogger;
@@ -34,7 +35,7 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
 
   @Override
   protected List<Class<? extends IOutline>> getConfiguredOutlines() {
-    List<Class<? extends IOutline>> outlines = new ArrayList<>();
+    List<Class<? extends IOutline>> outlines = new ArrayList<Class<? extends IOutline>>();
     outlines.add(SimpleWidgetsOutline.class);
     outlines.add(AdvancedWidgetsOutline.class);
     outlines.add(LayoutWidgetsOutline.class);
@@ -44,6 +45,11 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
   @Override
   protected String getConfiguredTitle() {
     return TEXTS.get("ScoutWidgetsDemoApp");
+  }
+
+  @Override
+  protected boolean getConfiguredTrayVisible() {
+    return true;
   }
 
   @Override
@@ -63,8 +69,9 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
     tableForm.setIconId(Icons.EclipseScout);
     tableForm.startView();
 
-    if (getAvailableOutlines().size() > 0) {
-      setOutline(getAvailableOutlines().get(0));
+    IOutline firstOutline = CollectionUtility.firstElement(getAvailableOutlines());
+    if (firstOutline != null) {
+      setOutline(firstOutline);
     }
 
   }
@@ -86,7 +93,7 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
       }
 
       @Override
-      public void execAction() throws ProcessingException {
+      protected void execAction() throws ProcessingException {
         ClientSyncJob.getCurrentSession(ClientSession.class).stopSession();
       }
     }
@@ -100,14 +107,6 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
       return TEXTS.get("ToolsMenu");
     }
   }
-
-  // TODO: check how to do the bookmark menu locally
-  //  @Order(25)
-  //  public class BookmarkMenu extends AbstractBookmarkMenu {
-  //    public BookmarkMenu() {
-  //      super(Desktop.this);
-  //    }
-  //  }
 
   @Order(30.0)
   public class HelpMenu extends AbstractMenu {
@@ -126,7 +125,7 @@ public class Desktop extends AbstractExtensibleDesktop implements IDesktop {
       }
 
       @Override
-      public void execAction() throws ProcessingException {
+      protected void execAction() throws ProcessingException {
         ScoutInfoForm form = new ScoutInfoForm();
         form.startModify();
       }

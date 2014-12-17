@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013 BSI Business Systems Integration AG.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     BSI Business Systems Integration AG - initial API and implementation
+ ******************************************************************************/
 package org.eclipsescout.demo.widgets.ui.swt;
 
 import org.eclipse.scout.rt.client.AbstractClientSession;
@@ -5,6 +15,7 @@ import org.eclipse.scout.rt.client.ui.form.IForm;
 import org.eclipse.scout.rt.ui.swt.AbstractSwtEnvironment;
 import org.eclipse.scout.rt.ui.swt.ISwtEnvironmentListener;
 import org.eclipse.scout.rt.ui.swt.SwtEnvironmentEvent;
+import org.eclipse.ui.PlatformUI;
 import org.eclipsescout.demo.widgets.ui.swt.editor.ScoutEditorPart;
 import org.eclipsescout.demo.widgets.ui.swt.views.CenterView;
 import org.eclipsescout.demo.widgets.ui.swt.views.EastView;
@@ -15,9 +26,6 @@ import org.eclipsescout.demo.widgets.ui.swt.views.SouthEastView;
 import org.eclipsescout.demo.widgets.ui.swt.views.SouthView;
 import org.eclipsescout.demo.widgets.ui.swt.views.SouthWestView;
 import org.eclipsescout.demo.widgets.ui.swt.views.WestView;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 public class SwtEnvironment extends AbstractSwtEnvironment {
@@ -52,19 +60,7 @@ public class SwtEnvironment extends AbstractSwtEnvironment {
         }
       }
     });
+
   }
 
-  private void setWindowTitle(final String title) {
-    for (IWorkbenchWindow w : PlatformUI.getWorkbench().getWorkbenchWindows()) {
-      final Shell s = w.getShell();
-      if (!s.isDisposed()) {
-        s.getDisplay().asyncExec(new Runnable() {
-          @Override
-          public void run() {
-            s.setText(title);
-          }
-        });
-      }
-    }
-  }
 }

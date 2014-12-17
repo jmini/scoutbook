@@ -39,7 +39,7 @@ public class ColorsCodeType extends AbstractCodeType<Long, Color> {
 
   @Override
   protected List<? extends ICodeRow<Color>> execLoadCodes(Class<? extends ICodeRow<Color>> codeRowType) throws ProcessingException {
-    List<ICodeRow<Color>> codes = new ArrayList<>();
+    List<ICodeRow<Color>> codes = new ArrayList<ICodeRow<Color>>();
 
     codes.add(new CodeRow<Color>(Color.PINK, TEXTS.get("Pink")));
     codes.add(new CodeRow<Color>(Color.RED, TEXTS.get("Red")));

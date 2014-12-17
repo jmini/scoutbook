@@ -20,7 +20,7 @@ public class AnswerOptionsLookupCall extends LocalLookupCall<Integer> {
 
   @Override
   protected List<LookupRow<Integer>> execCreateLookupRows() throws ProcessingException {
-    ArrayList<LookupRow<Integer>> rows = new ArrayList<>();
+    ArrayList<LookupRow<Integer>> rows = new ArrayList<LookupRow<Integer>>();
     rows.add(new LookupRow<Integer>(IMessageBox.YES_OPTION, "IMessageBox.YES_OPTION"));
     rows.add(new LookupRow<Integer>(IMessageBox.NO_OPTION, "IMessageBox.NO_OPTION"));
     rows.add(new LookupRow<Integer>(IMessageBox.CANCEL_OPTION, "IMessageBox.CANCEL_OPTION"));

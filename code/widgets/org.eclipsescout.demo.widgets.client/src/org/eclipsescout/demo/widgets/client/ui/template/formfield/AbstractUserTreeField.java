@@ -180,7 +180,7 @@ public abstract class AbstractUserTreeField extends AbstractStringField {
   }
 
   private LookupRow<String> nodeToLookupRow(Node node) {
-    LookupRow<String> row = new LookupRow<>(node.getKey(), node.getText(), node.getIconId());
+    LookupRow<String> row = new LookupRow<String>(node.getKey(), node.getText(), node.getIconId());
 
     row.setParentKey(node.getParentKey());
     row.setTooltipText(node.getToolTip());

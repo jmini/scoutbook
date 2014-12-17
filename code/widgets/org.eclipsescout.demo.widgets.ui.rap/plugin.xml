@@ -4,14 +4,14 @@
   <extension id="product" point="org.eclipse.core.runtime.products">
     <product
       application="org.eclipsescout.demo.widgets.ui.rap.app"
-      name="widget">
+      name="Scout Widget Demo App">
       <property
         name="appName"
-        value="widget">
+        value="Scout Widget Demo App">
       </property>
     </product>
   </extension>
-  <extension id="app" name="widget" point="org.eclipse.core.runtime.applications">
+  <extension id="app" name="Scout Widget Demo App" point="org.eclipse.core.runtime.applications">
    <application>
      <run class="org.eclipse.scout.rt.ui.rap.RwtApplication"/>
    </application>
@@ -56,7 +56,7 @@
       favicon="web-resources/eclipseScout.gif"
       id="org.eclipsescout.demo.widgets.ui.rap.branding.web"
       themeId="org.eclipse.scout.rt.ui.rap.theme"
-      title="widget">
+      title="widgets">
       <additionalHeaders>
         <link href="res/html-styles.css" rel="stylesheet"/>
       </additionalHeaders>
@@ -66,7 +66,7 @@
       favicon="web-resources/eclipseScout.gif"
       id="org.eclipsescout.demo.widgets.ui.rap.branding.mobile"
       themeId="org.eclipse.scout.rt.ui.rap.mobile.theme"
-      title="widget">
+      title="widgets">
       <additionalHeaders>
         <link href="res/html-styles.css" rel="stylesheet"/>
         <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"></meta>
@@ -77,7 +77,7 @@
       favicon="web-resources/eclipseScout.gif"
       id="org.eclipsescout.demo.widgets.ui.rap.branding.tablet"
       themeId="org.eclipse.scout.rt.ui.rap.mobile.theme"
-      title="widget">
+      title="widgets">
       <additionalHeaders>
         <link href="res/html-styles.css" rel="stylesheet"/>
         <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"></meta>
@@ -86,7 +86,8 @@
   </extension>
   <extension point="org.eclipse.rap.ui.themes">
     <themeContribution file="theme/application.css" themeId="org.eclipse.scout.rt.ui.rap.theme"/>
-  </extension>
+    <themeContribution file="theme/application.css" themeId="org.eclipse.scout.rt.ui.rap.mobile.theme"/> 
+  </extension> 
   <extension point="org.eclipse.equinox.http.registry.resources">
     <resource alias="/res" base-name="/web-resources"/>
   </extension>
@@ -95,20 +96,18 @@
       aliases="/"
       class="org.eclipse.scout.rt.server.commons.servletfilter.security.AnonymousSecurityFilter"
       ranking="10">
+       <init-param
+             name="active"
+             value="true">
+       </init-param>
     </filter>
     <filter
-      aliases="/"
-      class="org.eclipse.scout.rt.server.commons.servletfilter.security.BasicSecurityFilter"
-      ranking="20">
-    </filter>
-    <filter
-      aliases="/"
-      class="org.eclipse.scout.rt.ui.rap.servletfilter.LogoutFilter"
-      ranking="-1000000">
-      <init-param
-        name="active"
-        value="true">
-      </init-param>
+          aliases="/"
+          class="org.eclipse.scout.rt.ui.rap.servletfilter.LogoutFilter">
+       <init-param
+             name="active"
+             value="true">
+       </init-param>
     </filter>
   </extension>
   <extension point="org.eclipse.equinox.http.registry.servlets">
