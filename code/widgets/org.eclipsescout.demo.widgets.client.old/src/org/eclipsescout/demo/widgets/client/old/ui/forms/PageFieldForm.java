@@ -19,6 +19,7 @@ import org.eclipse.scout.rt.client.ui.form.fields.button.AbstractCloseButton;
 import org.eclipse.scout.rt.client.ui.form.fields.groupbox.AbstractGroupBox;
 import org.eclipse.scout.rt.client.ui.form.fields.pagefield.AbstractPageField;
 import org.eclipse.scout.rt.shared.TEXTS;
+import org.eclipsescout.demo.widgets.client.old.ui.desktop.pages.PageWithADetailformTablePage;
 import org.eclipsescout.demo.widgets.client.old.ui.forms.PageFieldForm.MainBox.CloseButton;
 import org.eclipsescout.demo.widgets.client.old.ui.forms.PageFieldForm.MainBox.PageBox;
 import org.eclipsescout.demo.widgets.client.ui.forms.IPageForm;
@@ -65,8 +66,7 @@ public class PageFieldForm extends AbstractForm implements IPageForm {
 
       @Override
       protected void execInitField() throws ProcessingException {
-// TODO: check if we need to migrate PageWithADetailformTablePage from old widget app
-//        setPage(new PageWithADetailformTablePage());
+        setPage(new PageWithADetailformTablePage());
       }
     }
 

@@ -90,14 +90,14 @@ public class DateTimeFieldsForm extends AbstractForm implements IPageForm {
   /**
    * @return the Placeholder1Field
    */
-  public Placeholder1Field getPlaceholder1Field(){
+  public Placeholder1Field getPlaceholder1Field() {
     return getFieldByClass(Placeholder1Field.class);
   }
 
   /**
    * @return the PlaceholderField
    */
-  public PlaceholderField getPlaceholderField(){
+  public PlaceholderField getPlaceholderField() {
     return getFieldByClass(PlaceholderField.class);
   }
 
