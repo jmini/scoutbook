@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.scout.docs.publish.PublishUtility;
+import org.eclipse.scout.docs.publish.ZipUtility;
 import org.junit.Test;
 
 /**
@@ -23,24 +24,17 @@ import org.junit.Test;
  */
 public class PublishDownloadsTest {
 
-  private static final String HTML_OUT = "html";
-  private static final String PDF_OUT = "pdf";
-  private static final String ZIP_OUT = "zip";
-  private File outFolder = new File("target/published-docs/downloads");
+  private File outRootFolder = new File("target/published-docs/downloads");
 
-  private File outHelloWorld = new File(outFolder, "article_helloworld");
-  private File outInstall = new File(outFolder, "article_install");
-  private File outBookIntro = new File(outFolder, "book_scout_intro");
-  private File outBookFrontend = new File(outFolder, "book_scout_frontend");
+  private File outHelloWorld = new File(outRootFolder, "article_helloworld");
+  private File outInstall = new File(outRootFolder, "article_install");
+  private File outBookIntro = new File(outRootFolder, "book_scout_intro");
+  private File outBookFrontend = new File(outRootFolder, "book_scout_frontend");
 
   @Test
   public void publishHelloWorldAsHtmlAndZip() throws IOException {
     File inFolder = new File("../../build/scout_helloworld/target/generated-docs");
-    String inFileName = "scout_helloworld.html";
-
-    PublishUtility.publishHtmlFile(inFolder, inFileName, new File(outHelloWorld, HTML_OUT));
-
-    //TODO: create a zip.
+    publishAsHtmlAndZip(inFolder, outHelloWorld, "scout_helloworld");
   }
 
   @Test
@@ -48,17 +42,13 @@ public class PublishDownloadsTest {
     File inFolder = new File("../../build/scout_helloworld/target/generated-docs");
     String inFileName = "scout_helloworld.pdf";
 
-    PublishUtility.publishPdfFile(inFolder, inFileName, new File(outHelloWorld, PDF_OUT));
+    PublishUtility.publishPdfFile(inFolder, inFileName, outHelloWorld);
   }
 
   @Test
   public void publishScoutInstallAsHtmlAndZip() throws IOException {
     File inFolder = new File("../../build/scout_install/target/generated-docs");
-    String inFileName = "scout_install.html";
-
-    PublishUtility.publishHtmlFile(inFolder, inFileName, new File(outInstall, HTML_OUT));
-
-    //TODO: create a zip.
+    publishAsHtmlAndZip(inFolder, outInstall, "scout_install");
   }
 
   @Test
@@ -66,17 +56,13 @@ public class PublishDownloadsTest {
     File inFolder = new File("../../build/scout_install/target/generated-docs");
     String inFileName = "scout_install.pdf";
 
-    PublishUtility.publishPdfFile(inFolder, inFileName, new File(outInstall, PDF_OUT));
+    PublishUtility.publishPdfFile(inFolder, inFileName, outInstall);
   }
 
   @Test
   public void publishBookIntroAsHtmlAndZip() throws IOException {
     File inFolder = new File("../../build/book_scout_intro/target/generated-docs");
-    String inFileName = "scout_intro.html";
-
-    PublishUtility.publishHtmlFile(inFolder, inFileName, new File(outBookIntro, HTML_OUT));
-
-    //TODO: create a zip.
+    publishAsHtmlAndZip(inFolder, outBookIntro, "scout_intro");
   }
 
   @Test
@@ -84,17 +70,13 @@ public class PublishDownloadsTest {
     File inFolder = new File("../../build/book_scout_intro/target/generated-docs");
     String inFileName = "scout_intro.pdf";
 
-    PublishUtility.publishPdfFile(inFolder, inFileName, new File(outBookIntro, PDF_OUT));
+    PublishUtility.publishPdfFile(inFolder, inFileName, outBookIntro);
   }
 
   @Test
   public void publishBookFrontEndAsHtmlAndZip() throws IOException {
     File inFolder = new File("../../build/book_scout_frontend/target/generated-docs");
-    String inFileName = "scout_frontend.html";
-
-    PublishUtility.publishHtmlFile(inFolder, inFileName, new File(outBookFrontend, HTML_OUT));
-
-    //TODO: create a zip.
+    publishAsHtmlAndZip(inFolder, outBookFrontend, "scout_frontend");
   }
 
   @Test
@@ -102,6 +84,16 @@ public class PublishDownloadsTest {
     File inFolder = new File("../../build/book_scout_frontend/target/generated-docs");
     String inFileName = "scout_frontend.pdf";
 
-    PublishUtility.publishPdfFile(inFolder, inFileName, new File(outBookFrontend, PDF_OUT));
+    PublishUtility.publishPdfFile(inFolder, inFileName, outBookFrontend);
+  }
+
+  private void publishAsHtmlAndZip(File inFolder, File outFolder, String name) throws IOException {
+    String inFileName = name + ".html";
+    File outHtmlFolder = new File(outFolder, name);
+
+    PublishUtility.publishHtmlFile(inFolder, inFileName, outHtmlFolder);
+
+    File outZipFile = new File(outFolder, name + ".zip");
+    ZipUtility.zipFolder(outHtmlFolder, outZipFile);
   }
 }

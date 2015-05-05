@@ -1,4 +1,6 @@
-= Build
+= Scout Docs - Build
+
+== Description
 
 This folder contains the documents that are build.
 

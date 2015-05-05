@@ -1,0 +1,31 @@
+= Scout Docs
+
+* link:http://wiki.eclipse.org/Scout/Book[Project page]
+* link:http://tools.bsiag.com/scoutbook/[Distribution folder (PDF, HTML, zipped HTML)]
+
+
+== Organisation of the Repository
+
+* `adoc`: contains text modules (Asciidoc files) that are included in the final documents
+* `build`: contains the documentation items and the script to build them (based on maven, using Asciidoctor). link:build/[read more]
+* `code`: contains demo application (code snippets in the document are taken from this code base)
+* `imgs`: contains all the images.
+* `publish`: contains some tasks written in Java used as post-processing engine for the documentation items contained in the `build` folder. link:publish/[read more]
+
+
+== Building & publishing the documents
+
+Building the documents using Asciidoctor: check the link:build/README.adoc[README of the build folder]
+
+Post processing the Asciidoctor output: check the link:publish/README.adoc[README of the publish folder]
+
+
+== Issue tracker / Get in touch
+
+* Use the link:http://bugs.eclipse.org/[Bugzilla Docs tracker] hosted by the Eclipse Foundation.
+* Use the link:http://www.eclipse.org/forums/eclipse.scout[Eclipse Scout Forum]
+
+
+== License
+
+To be determined!
