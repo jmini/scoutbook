@@ -7,9 +7,11 @@ import org.eclipse.scout.service.AbstractService;
 
 public class DesktopService extends AbstractService implements IDesktopService {
 
+  //tag::load[]
   @Override
   public DesktopFormData load(DesktopFormData formData) throws ProcessingException {
-    formData.getMessage().setValue("Hello World!");
+    formData.getMessage().setValue("Hello World!"); // <1>
     return formData;
   }
+  //end::load[]
 }

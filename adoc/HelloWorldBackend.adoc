@@ -40,12 +40,7 @@ The complete implementation of the [java]+load+ method is provided in <<lst-hell
 [source,java]
 .load() implementation in the DesktopService.
 ----
-@Override
-public DesktopFormData load(DesktopFormData formData) 
-  throws ProcessingException {
-    formData.getMessage().setValue("Hello World!"); <1>
-    return formData;
-}
+include::{codedir}/helloworld/org.eclipse.scout.helloworld.server/src/org/eclipse/scout/helloworld/server/services/DesktopService.java[tags=load]
 ----
 <1> assign a value to the value holder part of the FormData corresponding to the message field
 
