@@ -923,7 +923,7 @@ The implementation of the Scout server's [java]+load+ and [java]+store+ methods 
 To load the correct person data, the [java]+load+ method expects the person's id as an input parameter [java]+personId+ in the [java]+formData+. 
 
 For the data binding between the [java]+formData+ and the attributes in the database tables Scout provides support in the methods of the [java]+SQL+ class.
-This support is first searching for the pattern "`:$<$variable$>$`" in the provided SQL statement. 
+This support is first searching for the pattern "`:<variable>`" in the provided SQL statement. 
 For all such patterns found, the binding to the corresponding [java]+getVariable+ and [java]+setVariable+ methods of the form data object is performed by the Scout framework at runtime. 
 
 The implementation of the person form's new handler is implemented similar to it's modify handler. 
