@@ -34,6 +34,8 @@
                         <sourcedir>${project.build.sourceDirectory}</sourcedir>
                         <project-version>${project.version}</project-version>
                         <imagesdir></imagesdir>
+                        <mdledir>${project.build.sourceDirectory}/../../../../../adoc</mdledir>
+                        <codedir>${project.build.sourceDirectory}/../../../../../code</codedir>
                     </attributes>
                 </configuration>
                 <executions>

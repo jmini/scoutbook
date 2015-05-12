@@ -16,7 +16,7 @@ You can generate all documents using maven at the root of the `build` folder:
 
  mvn
 
-You can generate one document by switching to one of subfolder and unsing maven:
+You can generate one document by switching to one of subfolder and using maven:
 
  cd scout_helloworld/
  mvn
