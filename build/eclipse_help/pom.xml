@@ -27,8 +27,8 @@
                         <sourcedir>${project.build.sourceDirectory}</sourcedir>
                         <project-version>${project.version}</project-version>
                         <imagesdir></imagesdir>
-                        <mdledir>${project.build.sourceDirectory}/../../../../../adoc</mdledir>
-                        <codedir>${project.build.sourceDirectory}/../../../../../code</codedir>
+                        <mdledir>${project.build.directory}/../../../adoc</mdledir>
+                        <codedir>${project.build.directory}/../../../code</codedir>
                         <attribute-missing>warn</attribute-missing>
                         <attribute-undefined>warn</attribute-undefined>
                         <baseDir>${project.basedir}</baseDir>
