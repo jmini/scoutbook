@@ -3,6 +3,7 @@
 :scout_forum: http://eclipse.org/forums/eclipse.scout
 :scout_ml: http://dev.eclipse.org/mailman/listinfo/scout-dev
 :scout_contrib: http://wiki.eclipse.org/Scout/Contribution
+:scout_branch: https://wiki.eclipse.org/Scout/Contribution_Guidelines#Git_Branching_Policy
 :bugzilla: http://bugs.eclipse.org/bugs/
 :bugzilla_query: http://bugs.eclipse.org/bugs/enter_bug.cgi?product=Scout&component=Scout%20Docs
 :bugzilla_new: http://bugs.eclipse.org/bugs/enter_bug.cgi?product=Scout&component=Scout%20Docs
@@ -15,7 +16,8 @@
 
 = Eclipse Scout - Docs
 
-This Repository contains the source for producing the different documentation items (Eclipse Help, Scout Books, HTML pages...).
+This Repository is part of the *Eclipse Scout* project.
+It contains the source of the documentation items (Eclipse Help, Scout Books, HTML pages...) and some demo applications created with the framework.
 
 link:{scout_home}[Eclipse Scout] is a mature and open framework for modern, service oriented business applications.
 It substantially boosts developer productivity and is simple to learn.
@@ -34,18 +36,18 @@ It substantially boosts developer productivity and is simple to learn.
 
 == Organisation of this Repository
 
-* `adoc` folder: contains text modules (Asciidoc files) that are included in the documentation items
-* `build` folder: contains the documentation items and the script to build them (based on maven, using Asciidoctor), link:build/[read more],
-* `code` folder: contains demo application (code snippets in the documentation items are extracted from this code base during the build)
-* `imgs` folder: contains all the images used in the documentation items.
-* `publish` folder: contains some tasks written in Java used as post-processing engine for the documentation items contained in the `build` folder, link:publish/[read more].
+* `docs` folder: contains the documentation source, link:docs/[read more],
+* `code` folder: contains demo applications (code snippets in the documentation items are extracted from this code base during the build)
+
+This repository follows the same link:{scout_branch}[git branching policy] as the other eclipse scout repositories.
+The *develop* branch contains the latest version.
 
 
-== Building & publishing the documents
+== Build
 
-Building the documents using Asciidoctor: check the link:build/README.adoc[README of the build folder].
+The documentation items are built with maven: check the link:docs/README.adoc[README of the docs folder].
 
-Post processing the Asciidoctor output: check the link:publish/README.adoc[README of the publish folder].
+The demo applications are built with maven: check the link:code/README.adoc[README of the code folder].
 
 
 == Issue tracker
